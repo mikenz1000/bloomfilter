@@ -7,13 +7,16 @@
     
     The hash function can be provided, or otherwise defaults to the standard std::hash
 
+    byte_misalignment allows the data structure to be (mis)aligned e.g. 3 means the address of the block array
+    will end in a 3h or Bh 
+
     See BloomFilter.hpp for explanation of the methods
 */
 #ifndef __bloomfilter_basic_HPP
 #define __bloomfilter_basic_HPP
 #include "bloomfilter.hpp"
 
-template<typename index_t, typename block_t, typename Hash = std::hash<index_t>, unsigned int byte_alignment = 0>
+template<typename index_t, typename block_t, typename Hash = std::hash<index_t>, unsigned int byte_misalignment = 0>
 class bloomfilter_basic : public bloomfilter<index_t>
 {
 protected:
@@ -25,18 +28,20 @@ public:
     bloomfilter_basic(int m, int h) : bloomfilter<index_t>(m,h)
     {
         const unsigned int max_byte_alignment = 8;
-        if (byte_alignment > max_byte_alignment) throw std::runtime_error("max_byte_alignment exceeded");
+        if (byte_misalignment > max_byte_alignment) throw std::runtime_error("max_byte_alignment exceeded");
+        
         // round up so that if we for example have m=9 and sizeof(block_t)=8 then we get 2 elements in the array
         // (9+1*8-1)/(1*8) = 16/8 = 2
+        // also add max_byte_alignment * 2 so that we can 1/ align to max_byte_alignment and then 2/ mis-align
         blockcount = (m+sizeof(block_t)*8-1+max_byte_alignment*2)/(sizeof(block_t)*8);
         storage = (uint8_t*)malloc(blockcount * sizeof(block_t));
-        // first offset to get to max_byte_alignment
-        size_t offset = max_byte_alignment - ((size_t)storage) & (max_byte_alignment-1);
-//        std::cout << "storage = " << std::hex << (size_t)storage << ", offset = " << offset << std::endl;
-        offset += byte_alignment;// ? (byte_alignment - ( ((size_t)storage) & ((byte_alignment)-1) )) : 0;
-//        std::cout << "storage = " << std::hex << (size_t)storage << ", offset = " << offset << std::endl;
         
-        //bitarray = new block_t[blockcount];
+        // first offset to get to max_byte_alignment always as a starting point
+        size_t offset = max_byte_alignment - ((size_t)storage) & (max_byte_alignment-1);
+        
+        // then apply our (mis)alignment
+        offset += byte_misalignment;
+        
         bitarray = (block_t*)(storage+offset);
         clear();
     };

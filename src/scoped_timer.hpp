@@ -27,8 +27,11 @@ public:
         std::chrono::high_resolution_clock::time_point stopped = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> seconds = std::chrono::duration_cast<std::chrono::duration<double> >(stopped-started);
         std::cout << description << " " << std::fixed << seconds.count() << "s";
-//        if (iterations > 0) std::cout << std::scientific << " (" << (seconds.count()/iterations) << " x " << iterations << " its)";
-        //std::cout << std::endl;
+        if (iterations > 0) 
+        {
+            //suppress per-iteration calculation
+            //std::cout << std::scientific << " (" << (seconds.count()/iterations) << " x " << iterations << " its)";
+        }
     }
 };
 
