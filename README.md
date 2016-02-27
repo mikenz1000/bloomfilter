@@ -46,23 +46,22 @@ vector<bool>, spooky hash:
 So just looking at the cheaper hash because it will highlight the difference in performance of storage type:
 
 ```
-64 bit blocks:
-	Filling took 1.301402s (1.301402e-07 x 10000000 its)
-	Testing took 0.750455s (7.504547e-08 x 10000000 its)
-32 bit blocks:
-	Filling took 1.307689s (1.307689e-07 x 10000000 its)
-	Testing took 0.787167s (7.871670e-08 x 10000000 its)
-16 bit blocks:
-	Filling took 1.421501s (1.421501e-07 x 10000000 its)
-	Testing took 0.755271s (7.552712e-08 x 10000000 its)
-8 bit blocks:
-	Filling took 1.319426s (1.319426e-07 x 10000000 its)
-	Testing took 0.891759s (8.917585e-08 x 10000000 its)
-vector<bool>:
-	Filling took 1.452523s (1.452523e-07 x 10000000 its)
-	Testing took 0.983000s (9.830005e-08 x 10000000 its)
+Determined m = 1917011, h = 7 for desired p(false +ve) 0.01
+64 bit blocks, std::hash...       : 	filling 0.774081s	testing 0.522455s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 1 byte mis-aligned: 	filling 0.884380s	testing 0.437734s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 2 byte mis-aligned: 	filling 0.691262s	testing 0.462049s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 3 byte mis-aligned: 	filling 0.650693s	testing 0.509199s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 4 byte mis-aligned: 	filling 0.652699s	testing 0.547534s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 5 byte mis-aligned: 	filling 0.690840s	testing 0.520012s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 6 byte mis-aligned: 	filling 0.728454s	testing 0.529477s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 7 byte mis-aligned: 	filling 0.640647s	testing 0.492668s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+64 bit blocks - 8 byte mis-aligned: 	filling 0.667098s	testing 0.483496s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+vector<bool>, std::hash           : 	filling 0.671950s	testing 0.494453s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+32 bit blocks, std::hash...       : 	filling 0.709809s	testing 0.535923s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+32 bit blocks - 1 byte mis-aligned: 	filling 0.659153s	testing 0.498099s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+32 bit blocks - 2 byte mis-aligned: 	filling 0.686998s	testing 0.492405s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+32 bit blocks - 3 byte mis-aligned: 	filling 0.689679s	testing 0.487244s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
+8 bit blocks                      : 	filling 0.661951s	testing 0.517451s	p(false +ve) 0.100190 vs E[p(false +ve)] 0.010039
 ```
 
-So as expected on a 64-bit machine, slightly better performance with 64-bit blocks (20% vs vector<bool>)
-
-To-do -> check the impact of byte alignment...
+So... basically block size and byte alignment makes little difference..

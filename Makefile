@@ -6,10 +6,10 @@ LIBS =
 OPT = -O3 -msse3 -std=c++0x
 
 # add -D USESSE to enable SSE (still in development)
-DEF =
+DEF = -D MAXKMERLENGTH=31
 
 # Mac OS users: uncomment the following lines
-CFLAGS = -Wall -m64
+CFLAGS = -Wall -m64 
 
 # Sparc/Solaris users: uncomment the following line
 # CFLAGS = -Wall -m64
